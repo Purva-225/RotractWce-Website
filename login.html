@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rotaract WebTech — Auth</title>
+
+<style>
+:root{
+  --gold:#c9a84c;
+  --bg:#0a0c12;
+  --card:#111520;
+  --text:#e8e0d0;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  padding:30px;
+  border-radius:10px;
+  width:350px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+/* TITLE */
+h2{
+  text-align:center;
+  margin-bottom:20px;
+  color:var(--gold);
+}
+
+/* INPUT */
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0;
+  border:none;
+  border-radius:5px;
+  outline:none;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  background:var(--gold);
+  cursor:pointer;
+  font-weight:bold;
+}
+
+/* SWITCH */
+.switch{
+  margin-top:10px;
+  text-align:center;
+  cursor:pointer;
+  color:#aaa;
+}
+
+/* MEMBERS */
+#membersBox{
+  margin-top:15px;
+  max-height:150px;
+  overflow:auto;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h2 id="title">Sign In</h2>
+
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
+
+<button onclick="submitForm()">Submit</button>
+
+<div class="switch" onclick="toggle()">
+  Switch to Register
+</div>
+
+<button onclick="fillDemo()">Demo Login</button>
+<button onclick="viewMembers()">View Members</button>
+
+<div id="membersBox"></div>
+
+</div>
+
+<script>
+let isRegister = false;
+
+/* SWITCH TAB */
+function toggle(){
+  isRegister = !isRegister;
+  document.getElementById("title").innerText = isRegister ? "Register" : "Sign In";
+}
+
+/* SUBMIT */
+function submitForm(){
+  let email = document.getElementById("email").value;
+  let pass = document.getElementById("password").value;
+
+  if(email==="" || pass===""){
+    alert("Fill all fields");
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+
+  if(isRegister){
+    users.push({email,pass});
+    localStorage.setItem("users", JSON.stringify(users));
+    alert("Registered successfully ✅");
+  }else{
+    let found = users.find(u=>u.email===email && u.pass===pass);
+    if(found){
+      alert("Login successful ✅");
+    }else{
+      alert("Invalid credentials ❌");
+    }
+  }
+}
+
+/* DEMO LOGIN */
+function fillDemo(){
+  document.getElementById("email").value = "demo@gmail.com";
+  document.getElementById("password").value = "123456";
+}
+
+/* VIEW MEMBERS */
+function viewMembers(){
+  let users = JSON.parse(localStorage.getItem("users") || "[]");
+  let box = document.getElementById("membersBox");
+
+  if(users.length===0){
+    box.innerHTML = "No members found";
+    return;
+  }
+
+  box.innerHTML = users.map(u => "<p>"+u.email+"</p>").join("");
+}
+</script>
+
+</body>
+</html>
